@@ -52,6 +52,12 @@ Train:
 
 ```shell
 CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 29501 train.py -c /the/path/of/conf --model sdt --spike-mode lif
+
+CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 29501 train.py -c conf/imagenet/6_512_300E_t4.yml --model sdt --spike-mode lif
+
+CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 29501 train.py -c conf/cifar10-dvs/2_256_200E_t16_TET.yml --model sdt --spike-mode lif
+
+CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 29502 train.py -c conf/gesture/2_256_200E_t16.yml --model sdt --spike-mode lif
 ```
 
 Test:
@@ -59,8 +65,31 @@ Test:
 ```shell
 CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 29501 firing_num.py -c /the/path/of/conf --model sdt --spike-mode lif --resume /the/path/of/parameters --no-resume-opt
 
+CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 29501 firing_num.py -c conf/imagenet/8_512_300E_t4.yml --model sdt --spike-mode lif --resume output/train/8-512-skip1-finetune/model_best.pth.tar --no-resume-opt
+
 # for 288 x 288 resolution
 CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 29501 firing_num.py -c /the/path/of/conf --model sdt --spike-mode lif --resume /the/path/of/parameters --no-resume-opt --large-valid
+
+# for attention skipping
+CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 29502 firing_num.py -c conf/imagenet/6_512_300E_t4.yml --model sdt --spike-mode lif --resume output/train/6-512-og-100/model_best.pth.tar --no-resume-opt --auto-skip --log-file output/valid/6-512-og-100/sdt.log --skip-threshold 0.01
+
+
+# for timestep early exit
+
+# imagenet - with attention skipping
+CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 29502 train_dvs.py -c conf/imagenet/8_512_300E_t4.yml --model sdt --spike-mode lif --validate-only --initial-checkpoint output/train/8-512-og-100/model_best.pth.tar --early-exit --exit-metric confidence --exit-threshold 0.9 --auto-skip --log-file output/valid/8-512-og-100/sdt.log --skip-threshold 0.01
+thresholds: 0.01, 0.0116, 0.012, 0.016, 0.02
+# cifar10-dvs
+CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 29502 train_dvs.py -c conf/cifar10-dvs/2_256_200E_t16_TET.yml --model sdt --spike-mode lif --validate-only --initial-checkpoint output/train/78.8/model_best.pth.tar --early-exit --exit-metric confidence --exit-threshold 0.8
+
+# gesture
+CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 29502 train_dvs.py -c conf/gesture/2_256_200E_t16.yml --model sdt --spike-mode lif --validate-only --initial-checkpoint output/train/gesture-t16/model_best.pth.tar --early-exit --exit-metric confidence --exit-threshold 0.8
+
+```
+
+Fine-tune:
+```shell
+CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 29502 finetune.py --finetune-checkpoint output/train/8-512-og-100/model_best.pth.tar -c conf/imagenet/8_512_300E_t4.yml --model sdt --spike-mode lif --no-resume-opt --auto-skip --log-file output/valid/8-512-og-100/sdt.log --skip-threshold 0.01
 ```
 
 Result and explainability:
