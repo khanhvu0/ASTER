@@ -1,8 +1,5 @@
 # ASTER: Attention-based Spiking Transformer Engine for Event-driven Reasoning
 
-## Adapted from Spike-Driven-Transformer ([Github](https://github.com/BICLab/Spike-Driven-Transformer)) ([NeurIPS2023](https://openreview.net/forum?id=9FmolyOHi5)) and SEENN ([Github](https://github.com/Intelligent-Computing-Lab-Yale/SEENN)) ([NeurIPS2023](https://openreview.net/forum?id=mbaN0Y0QTw&noteId=1CTUDc0ucN))
-
-
 ## Abstract
 
 The integration of spiking neural networks (SNNs) with transformer-
@@ -145,3 +142,6 @@ ImageNet with the following folder structure, you can extract imagenet by this [
 │  │   ├── ......
 │  ├── ......
 ```
+
+Adapted with code from Spike-Driven-Transformer ([Github](https://github.com/BICLab/Spike-Driven-Transformer)) ([NeurIPS2023](https://openreview.net/forum?id=9FmolyOHi5)) and SEENN ([Github](https://github.com/Intelligent-Computing-Lab-Yale/SEENN)) ([NeurIPS2023](https://openreview.net/forum?id=mbaN0Y0QTw&noteId=1CTUDc0ucN))
+
